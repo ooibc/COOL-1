@@ -26,12 +26,9 @@ import com.nus.cool.core.io.storevector.InputVector;
 import com.nus.cool.core.io.readstore.CubeRS;
 import com.nus.cool.core.io.readstore.CohortRS;
 import com.nus.cool.core.schema.TableSchema;
-import com.nus.cool.core.util.config.DataLoaderConfig;
-import com.nus.cool.loader.DataLoader;
 
 import java.io.*;
 import java.nio.ByteOrder;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 
 /**
