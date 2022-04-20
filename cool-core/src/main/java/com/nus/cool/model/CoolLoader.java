@@ -2,6 +2,7 @@ package com.nus.cool.model;
 
 import com.google.common.io.Files;
 import com.nus.cool.core.schema.TableSchema;
+import com.nus.cool.core.util.config.CsvDataLoaderConfig;
 import com.nus.cool.core.util.config.DataLoaderConfig;
 import com.nus.cool.loader.DataLoader;
 
@@ -30,7 +31,7 @@ public class CoolLoader {
      * @param cubeRepo the name of the output cube repository
      * @throws IOException
      */
-    public synchronized void load(String cube, String schemaFileName, String dimFileName, String dataFileName, String cubeRepo) throws IOException{
+    public void load(String cube, String schemaFileName, String dimFileName, String dataFileName, String cubeRepo) throws IOException{
         // check the existence of the data repository
         File root = new File(cubeRepo);
         if (!root.exists()){
@@ -69,7 +70,7 @@ public class CoolLoader {
             currentVersion = Integer.parseInt(LastVersion.getName().substring(1));
         }
 
-        File outputCubeVersionDir = new File(cubeRoot, String.format("v%0"+8+"d",(currentVersion+1)));
+        File outputCubeVersionDir = new File(cubeRoot, "v"+String.valueOf(currentVersion+1));
         if (outputCubeVersionDir.mkdir()){
             System.out.println("[*] New version " + outputCubeVersionDir.getName() + " is created!");
         }
