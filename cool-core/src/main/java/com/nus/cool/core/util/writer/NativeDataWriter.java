@@ -13,17 +13,24 @@ import com.nus.cool.core.io.writestore.ChunkWS;
 import com.nus.cool.core.io.writestore.MetaChunkWS;
 import com.nus.cool.core.schema.TableSchema;
 import com.nus.cool.core.util.IntegerUtil;
+import lombok.RequiredArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
+@RequiredArgsConstructor
 public class NativeDataWriter implements DataWriter {
 
-    private TableSchema tableSchema;
+    @NotNull
+    private final TableSchema tableSchema;
 
+    @NotNull
     private final File outputDir;
 
+    @NotNull
     private final long chunkSize;
 
+    @NotNull
     private final long cubletSize;
-
 
     /**
      * states
@@ -41,7 +48,7 @@ public class NativeDataWriter implements DataWriter {
     private int userKeyIndex;
     
     private MetaChunkWS metaChunk;
-    
+
     /**
      * updated as building progress
      */
@@ -57,14 +64,6 @@ public class NativeDataWriter implements DataWriter {
 
     private DataOutputStream out = null;
 
-    public NativeDataWriter(TableSchema schema, File outputDir, long chunkSize,
-        long cubletSize, File inputMetaFile) throws IOException {
-        this.tableSchema = schema;
-        this.outputDir = outputDir;
-        this.chunkSize = chunkSize;
-        this.cubletSize = cubletSize;
-    }
-    
     @Override
     public boolean Initialize() throws IOException {
         if (initalized) return true;
