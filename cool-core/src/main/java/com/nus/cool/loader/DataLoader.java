@@ -61,24 +61,22 @@ public class DataLoader {
     private final DataWriter writer;
     
 
-    public static Builder builder(String dataSetName,
-                                  TableSchema tableSchema, File dimensionFile, File dataFile,
+    public static Builder builder(String dataSourceName,
+                                  TableSchema tableSchema, File dataFile,
                                   File outputDir, DataLoaderConfig config) {
-        return new Builder(dataSetName, tableSchema, dimensionFile,
-                dataFile, outputDir, config);
+        return new Builder(dataSourceName, tableSchema, dataFile, outputDir, config);
     }
 
     /**
      * load data into cool native format
-     * @throws IOException
      */
     public void load() throws IOException {
         // write dataChunk first
         writer.Initialize();
       while (reader.hasNext()) {
-        writer.Add(parser.parse(reader.next()));
+          writer.Add(parser.parse(reader.next()));
       }
-        writer.Finish();
+      writer.Finish();
     }
     @AllArgsConstructor
     public static class Builder {
@@ -92,11 +90,7 @@ public class DataLoader {
          */
         @NonNull
         private final TableSchema tableSchema;
-        /**
-         * dimension file of the dataset
-         */
-        @NonNull
-        private final File dimensionFile;
+
         /**
          * raw data
          */
@@ -119,7 +113,11 @@ public class DataLoader {
          * @throws IOException
          */
         public DataLoader build() throws IOException {
-            return new DataLoader(dataSetName, config.createTupleReader(dataFile), config.createTupleParser(tableSchema), new NativeDataWriter(tableSchema, outputDir, config.getChunkSize(), config.getCubletSize(), dimensionFile));
+            return new DataLoader(dataSetName,
+                    config.createTupleReader(dataFile),
+                    config.createTupleParser(tableSchema),
+                    new NativeDataWriter(
+                            tableSchema, outputDir, config.getChunkSize(), config.getCubletSize()));
         }
     }
 }
