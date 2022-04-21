@@ -47,22 +47,22 @@ import java.io.IOException;
  * max = max of the values
  * values = column data (compressed)
  */
-public class RangeFieldWS implements FieldWS {
+public class DataRangeFieldWS implements DataFieldWS {
 
   /**
    * Field index to get data from tuple
    */
-  private int i;
+  private int fieldIndex;
 
-  private FieldType fieldType;
+  private final FieldType fieldType;
 
-  private DataOutputBuffer buffer = new DataOutputBuffer();
+  private final DataOutputBuffer buffer = new DataOutputBuffer();
 
-  private OutputCompressor compressor;
+  private final OutputCompressor compressor;
 
-  public RangeFieldWS(FieldType fieldType, int i, OutputCompressor compressor) {
-    checkArgument(i >= 0);
-    this.i = i;
+  public DataRangeFieldWS(FieldType fieldType, int fieldIndex, OutputCompressor compressor) {
+    checkArgument(fieldIndex >= 0);
+    this.fieldIndex = fieldIndex;
     this.fieldType = fieldType;
     this.compressor = checkNotNull(compressor);
   }
@@ -73,12 +73,12 @@ public class RangeFieldWS implements FieldWS {
   }
 
   @Override
-  public void put(String[] tuple) throws IOException {
+  public void put(String TupleValue) throws IOException {
       if (this.fieldType == FieldType.ActionTime) {
           DayIntConverter converter = new DayIntConverter();
-          this.buffer.writeInt(converter.toInt(tuple[this.i]));
+          this.buffer.writeInt(converter.toInt(TupleValue));
       } else {
-          this.buffer.writeInt(Integer.parseInt(tuple[i]));
+          this.buffer.writeInt(Integer.parseInt(TupleValue));
       }
   }
 

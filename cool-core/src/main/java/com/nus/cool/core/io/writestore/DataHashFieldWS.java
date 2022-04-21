@@ -51,12 +51,12 @@ import java.util.Map;
  * keys = globalIDs
  * (compressed) values = column data, stored as localIDs (compressed)
  */
-public class HashFieldWS implements FieldWS {
+public class DataHashFieldWS implements DataFieldWS {
 
   /**
    * Field index to get data from tuple
    */
-  private final int i;
+  private final int fieldIndex;
 
   private final MetaFieldWS metaField;
 
@@ -69,19 +69,19 @@ public class HashFieldWS implements FieldWS {
    * Key: globalID
    * Value: localID
    */
-  private Map<Integer, Integer> idMap = Maps.newTreeMap();
+  private final Map<Integer, Integer> idMap = Maps.newTreeMap();
 
-  private DataOutputBuffer buffer = new DataOutputBuffer();
+  private final DataOutputBuffer buffer = new DataOutputBuffer();
 
-  private List<BitSet> bitSetList = Lists.newArrayList();
+  private final List<BitSet> bitSetList = Lists.newArrayList();
 
-  private Boolean preCal;
+  private final Boolean preCal;
 
-  public HashFieldWS(FieldType fieldType, int i, MetaFieldWS metaField, OutputCompressor compressor,
-      boolean preCal) {
-    checkArgument(i >= 0);
+  public DataHashFieldWS(FieldType fieldType, int fieldIndex, MetaFieldWS metaField, OutputCompressor compressor,
+                         boolean preCal) {
+    checkArgument(fieldIndex >= 0);
     this.fieldType = fieldType;
-    this.i = i;
+    this.fieldIndex = fieldIndex;
     this.metaField = checkNotNull(metaField);
     this.compressor = checkNotNull(compressor);
     this.preCal = preCal;
@@ -93,12 +93,12 @@ public class HashFieldWS implements FieldWS {
   }
 
   @Override
-  public void put(String[] tuple) throws IOException {
-    int gId = this.metaField.find(tuple[i]);
+  public void put(String tupleValue) throws IOException {
+    int gId = this.metaField.find(tupleValue);
       if (gId == -1)
       // The data may be corrupted
       {
-          throw new IllegalArgumentException("Value not exist in dimension: " + tuple[i]);
+          throw new IllegalArgumentException("Value not exist in dimension: " + tupleValue);
       }
     // Write globalIDs as values for temporary
     this.buffer.writeInt(gId);
