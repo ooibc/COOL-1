@@ -58,7 +58,7 @@ import java.util.List;
 public class ChunkWS implements Output {
 
   /**
-   * Chunk offset
+   * Chunk beginning offset, don't update
    */
   private int offset;
 
@@ -73,7 +73,7 @@ public class ChunkWS implements Output {
   private FieldWS[] fields;
 
   /**
-   * Create a chunk instance
+   * Constructor
    *
    * @param offset Offset in out stream
    * @param fields fields for this data chunk
@@ -124,7 +124,9 @@ public class ChunkWS implements Output {
   }
 
   /**
-   * Write ChunkWS to out stream and return bytes written
+   * Write DataChunkWS to out stream and return bytes written
+   * 1. Write field
+   * 2. Write header [chunkType, #Records, #Fields]
    *
    * @param out stream can write data to output stream
    * @return bytes written
@@ -132,6 +134,7 @@ public class ChunkWS implements Output {
    */
   @Override
   public int writeTo(DataOutput out) throws IOException {
+    // how many byte has been written.
     int bytesWritten = 0;
     int[] offsets = new int[this.fields.length];
 
@@ -142,6 +145,7 @@ public class ChunkWS implements Output {
       bytesWritten += this.fields[i].writeTo(out);
     }
 
+    // 2. Write header of the Data Chunk.
     // Calculate offset of header
     int chunkHeadOff = this.offset + bytesWritten;
     // Write chunkType (DATA)
@@ -153,13 +157,13 @@ public class ChunkWS implements Output {
     // Write #fields
     out.writeInt(IntegerUtil.toNativeByteOrder(this.fields.length));
     bytesWritten += Ints.BYTES;
-    // Write field offsets
+    // 2.4 Write field offsets
     for (int offset : offsets) {
       out.writeInt(IntegerUtil.toNativeByteOrder(offset));
       bytesWritten += Ints.BYTES;
     }
 
-    // Write header offset
+    // 3. Write header offset
     out.writeInt(IntegerUtil.toNativeByteOrder(chunkHeadOff));
     bytesWritten += Ints.BYTES;
     return bytesWritten;

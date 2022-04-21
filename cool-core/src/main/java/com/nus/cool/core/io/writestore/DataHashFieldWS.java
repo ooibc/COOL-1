@@ -110,10 +110,12 @@ public class HashFieldWS implements FieldWS {
   @Override
   public int writeTo(DataOutput out) throws IOException {
     int bytesWritten = 0;
+    // number of global id
     int size = this.buffer.size() / Ints.BYTES;
 
-    // Store globalID in order
+    // Store globalID in order, key: unique global id
     int[] key = new int[this.idMap.size()];
+    // i: local id
     int i = 0;
     for (Map.Entry<Integer, Integer> en : this.idMap.entrySet()) {
       key[i] = en.getKey();
@@ -129,6 +131,7 @@ public class HashFieldWS implements FieldWS {
 
     // Store value vector
     int[] value = new int[size];
+    // outputBuffer to InputBuffer, for read
     try (DataInputBuffer input = new DataInputBuffer()) {
       input.reset(this.buffer);
       for (i = 0; i < size; i++) {
@@ -142,7 +145,7 @@ public class HashFieldWS implements FieldWS {
       }
     }
 
-    // Write compressed key vector
+    // Write compressed key vector (unique global id)
     int min = ArrayUtil.min(key);
     int max = ArrayUtil.max(key);
     int count = key.length;
@@ -170,7 +173,7 @@ public class HashFieldWS implements FieldWS {
         bytesWritten += SimpleBitSetCompressor.compress(bitSet, out);
       }
     } else {
-      // Write compressed value vector
+      // Write compressed value vector (local ids)
       min = ArrayUtil.min(value);
       max = ArrayUtil.max(value);
       count = value.length;

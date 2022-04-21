@@ -65,6 +65,7 @@ public class CompressorAdviser {
     // byte size
     int byteAlignLength = bytes * hist.getNumOfValues();
 
+    // max < 2^8
     if (max < 256) {
       // TODO: Optimize this condition for better performance with INT16 and INT32
         if (bitmapBytes <= byteAlignLength)

@@ -67,11 +67,11 @@ public class MetaChunkWS implements Output {
   private final TableSchema schema;
 
   /**
-   * Create a MetaChunkWS instance
+   * Constructor
    *
    * @param schema     TableSchema
    * @param offset     Offset in out stream
-   * @param metaFields meta fields for this meta chunk
+   * @param metaFields fields type for each file of the meta chunk
    */
   public MetaChunkWS(TableSchema schema, int offset, MetaFieldWS[] metaFields) {
     this.metaFields = checkNotNull(metaFields);
@@ -80,6 +80,12 @@ public class MetaChunkWS implements Output {
     this.offset = offset;
   }
 
+  /**
+   * MetaChunkWS Build
+   * @param schema table schema created with table.yaml
+   * @param offset Offset begin to write metaChunk.
+   * @return MetaChunkWS instance
+   */
   public static MetaChunkWS newMetaChunkWS(TableSchema schema, int offset) {
     OutputCompressor compressor = new OutputCompressor();
     Charset charset = Charset.forName(schema.getCharset());
@@ -151,7 +157,7 @@ public class MetaChunkWS implements Output {
    * Write MetaChunkWS to out stream and return bytes written
    *
    * @param out stream can write data to output stream
-   * @return bytes written
+   * @return How many bytes has been written
    * @throws IOException If an I/O error occurs
    */
   @Override
@@ -168,21 +174,21 @@ public class MetaChunkWS implements Output {
     // Store header offset for MetaChunk layout
     int headOffset = this.offset + bytesWritten;
 
-    // Write ChunkType for header layout
+    // 1. Write ChunkType for header layout
     out.writeByte(ChunkType.META.ordinal());
     bytesWritten++;
 
-    // Write fields for header layout
+    // 2.1 Write fields for header layout
     out.writeInt(IntegerUtil.toNativeByteOrder(this.metaFields.length));
     bytesWritten += Ints.BYTES;
 
-    // Write field offsets for header layout
+    // 2.2 Write field offsets for header layout
     for (int offset : offsets) {
       out.writeInt(IntegerUtil.toNativeByteOrder(offset));
       bytesWritten += Ints.BYTES;
     }
 
-    // Write header offset for MetaChunk layout
+    // 3. Write header offset for MetaChunk layout
     out.writeInt(IntegerUtil.toNativeByteOrder(headOffset));
     bytesWritten += Ints.BYTES;
     return bytesWritten;

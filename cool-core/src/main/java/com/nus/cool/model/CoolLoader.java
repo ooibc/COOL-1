@@ -37,7 +37,7 @@ public class CoolLoader {
             if (root.mkdir()){
                 System.out.println("[*] Data repository " + root.getCanonicalPath() + " is created!");
             } else {
-                System.out.println("[x] Data repository " + root.getCanonicalPath() + "cannot be created!");
+                System.out.println("[x] Data repository " + root.getCanonicalPath() + " already exist!");
             }
         }
         File schemaFile = new File(schemaFileName);
@@ -69,12 +69,14 @@ public class CoolLoader {
             currentVersion = Integer.parseInt(LastVersion.getName().substring(1));
         }
 
+        // create a new folder to this new version
         File outputCubeVersionDir = new File(cubeRoot, String.format("v%0"+8+"d",(currentVersion+1)));
         if (outputCubeVersionDir.mkdir()){
             System.out.println("[*] New version " + outputCubeVersionDir.getName() + " is created!");
         }
         DataLoader loader = DataLoader.builder(cube, schema, dimensionFile, dataFile, outputCubeVersionDir, this.loaderConfig).build();
         loader.load();
+        // copy the table.yaml to new version folder
         Files.copy(schemaFile, new File(outputCubeVersionDir, "table.yaml"));
     }
 

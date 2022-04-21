@@ -69,8 +69,7 @@ public class NativeDataWriter implements DataWriter {
     public boolean Initialize() throws IOException {
         if (initalized) return true;
         this.userKeyIndex = tableSchema.getUserKeyField();
-        // when there is no user key, using any field for the additional
-        //  condition on chunk switch is ok.
+        // when there is no user key, using any field for the additional condition on chunk switch is ok.
         if (this.userKeyIndex == -1) this.userKeyIndex = 0; 
         // cublet
         this.offset = 0;
@@ -83,6 +82,10 @@ public class NativeDataWriter implements DataWriter {
         return true;
     }
 
+    /**
+     * Update current offset, begin write to a new dataChunk
+     * @throws IOException
+     */
     private void finishChunk() throws IOException {
         offset += chunk.writeTo(out);
         chunkOffsets.add(offset - Ints.BYTES);
@@ -96,6 +99,10 @@ public class NativeDataWriter implements DataWriter {
         return true;
     }
 
+    /**
+     * Write metaChunk lastly
+     * @throws IOException
+     */
     private void finishCublet() throws IOException {
         offset += new MetaChunkWS(tableSchema, offset,
           metaChunk.getMetaFields()).writeTo(out);
@@ -104,7 +111,9 @@ public class NativeDataWriter implements DataWriter {
         for (int chunkOff : chunkOffsets) {
           out.writeInt(IntegerUtil.toNativeByteOrder(chunkOff));
         }
+        // 3. write the header offset.
         out.writeInt(IntegerUtil.toNativeByteOrder(offset));
+        // 4. flush after writing whole Cublet.
         out.flush();
         out.close();
     }
@@ -119,6 +128,10 @@ public class NativeDataWriter implements DataWriter {
         return out;
     }
 
+    /**
+     * Switch a new cublet File once meet 1GB
+     * @throws IOException
+     */
     private void maybeSwitchCublet() throws IOException {
         if (offset < cubletSize) return;
         finishCublet();
@@ -155,6 +168,7 @@ public class NativeDataWriter implements DataWriter {
 
     @Override
     public void close() throws IOException {
+        // force close the out stream
         if (!finished) Finish();
     }
 }

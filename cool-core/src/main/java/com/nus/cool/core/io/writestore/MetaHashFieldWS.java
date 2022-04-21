@@ -57,7 +57,7 @@ public class HashMetaFieldWS implements MetaFieldWS {
   private RabinHashFunction32 rhash = RabinHashFunction32.DEFAULT_HASH_FUNCTION;
 
   /**
-   * Global dictionary, keys are hashed by the indexed string
+   * Global localStoreionary, keys are hashed by the indexed string
    */
   private Map<Integer, Term> dict = Maps.newTreeMap();
 
@@ -196,7 +196,9 @@ public class HashMetaFieldWS implements MetaFieldWS {
    */
   public static class Term {
 
+    // the real value in each row of the csv file
     String term;
+    // assigned global ID.
     int globalId;
 
     public Term(String term, int globalId) {

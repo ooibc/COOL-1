@@ -27,7 +27,7 @@ public interface FieldWS extends Output {
   FieldType getFieldType();
 
   /**
-   * Put tuple into this field
+   * Put a value in a tuple into this field
    *
    * @param tuple value
    */

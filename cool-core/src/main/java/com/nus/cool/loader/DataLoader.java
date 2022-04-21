@@ -73,6 +73,7 @@ public class DataLoader {
      * @throws IOException
      */
     public void load() throws IOException {
+        // write dataChunk first
         writer.Initialize();
       while (reader.hasNext()) {
         writer.Add(parser.parse(reader.next()));
@@ -113,8 +114,8 @@ public class DataLoader {
         private final DataLoaderConfig config;
 
         /**
-         *
-         * @return
+         * Build Data loader
+         * @return DataLoader instance
          * @throws IOException
          */
         public DataLoader build() throws IOException {

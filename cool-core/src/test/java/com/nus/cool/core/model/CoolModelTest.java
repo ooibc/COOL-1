@@ -203,7 +203,7 @@ public class CoolModelTest {
 
         String dzFilePath = "../datasetSource";
         String dataSourceName = "tpc-h-10g";
-        // currently only support 'select'
+        // current only support 'select'
         String operation = "select, O_ORDERPRIORITY, 2-HIGH";
 
         // load .dz file
