@@ -35,7 +35,7 @@ public class QueryServerModel {
 
     private String rootPath;
 
-    private CoolCohortEngine cohortEngine = new CoolCohortEngine();
+    private final CoolCohortEngine cohortEngine = new CoolCohortEngine();
 
     public QueryServerModel(String datasetPath){
         this.rootPath = datasetPath;

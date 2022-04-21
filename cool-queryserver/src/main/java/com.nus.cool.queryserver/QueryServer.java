@@ -6,11 +6,9 @@ import org.glassfish.jersey.jetty.JettyHttpContainer;
 import org.glassfish.jersey.server.ContainerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.jackson.JacksonFeature;
-
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.jetty9.InstrumentedHandler;
 import com.codahale.metrics.jetty9.InstrumentedQueuedThreadPool;
-
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -19,9 +17,9 @@ public class QueryServer implements Runnable {
 
     private Thread thisThread;
 
-    private AtomicBoolean started = new AtomicBoolean(false);
+    private final AtomicBoolean started = new AtomicBoolean(false);
 
-    private CountDownLatch waitForLatch = new CountDownLatch(1);
+    private final CountDownLatch waitForLatch = new CountDownLatch(1);
 
     private QueryServerModel model;
 
