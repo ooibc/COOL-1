@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
 @RestController
 public class DataLoaderHandler {
 
@@ -52,6 +57,15 @@ public class DataLoaderHandler {
         Util.getTimeClock();
         System.out.println("[*] Server is reloading the cube: " + cubReq.cubeName );
         return qsModel.reloadCube(cubReq.cubeName);
+    }
+
+
+    @GetMapping(value = "/listcubes",
+            produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String[]> listCubes() {
+        Util.getTimeClock();
+        System.out.println("[*] Server is listing all cubes.");
+        return qsModel.listCubes();
     }
 
 }
