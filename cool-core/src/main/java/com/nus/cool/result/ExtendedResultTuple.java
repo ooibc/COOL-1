@@ -54,4 +54,10 @@ public class ExtendedResultTuple {
 
   public ExtendedResultTuple() {}
 
+  @Override
+  public String toString() {
+    return String.format("cohort=%s, age=%s, measure=%s, min=%s, max=%s, sum=%s, num=%s,",
+            cohort, age, measure, min, max, sum, num);
+  }
+
 }
