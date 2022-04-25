@@ -80,7 +80,7 @@ public class QueryServerModel {
             CoolLoader coolLoader = new CoolLoader(config);
             coolLoader.load(q.getCubeName(),q.getSchemaPath(),q.getDimPath(),q.getDataPath(),q.getOutputPath());
             String resStr = "Cube " + q.getCubeName() + " has already been loaded.";
-            return ResponseEntity.badRequest()
+            return ResponseEntity.ok()
                     .headers(HttpHeaders.EMPTY)
                     .body(resStr);
         } catch (IOException e){
@@ -106,7 +106,7 @@ public class QueryServerModel {
 //                resStr = "Cube " + cube + " is reloaded.";
 //            } else resStr = "Cube " + cube + " is reloaded.";
 //
-//            return ResponseEntity.badRequest()
+//            return ResponseEntity.ok()
 //                    .headers(HttpHeaders.EMPTY)
 //                    .body(resStr);
 //        } catch (IOException e){
@@ -122,7 +122,7 @@ public class QueryServerModel {
      * @return cubes
      */
     public static ResponseEntity<String[]> listCubes() {
-        return ResponseEntity.badRequest()
+        return ResponseEntity.ok()
                 .headers(HttpHeaders.EMPTY)
                 .body(CoolModel.listCubes(ModelPathCfg.dataSourcePath));
     }
@@ -164,7 +164,7 @@ public class QueryServerModel {
             for(Integer ele: users){
                 result.add(ele.toString());
             }
-            return ResponseEntity.badRequest()
+            return ResponseEntity.ok()
                     .headers(HttpHeaders.EMPTY)
                     .body(result);
         } catch (IOException e){
@@ -187,7 +187,7 @@ public class QueryServerModel {
             coolModel.reload(cube);
 
             cohorts = coolModel.listCohorts(cube);
-            return ResponseEntity.badRequest()
+            return ResponseEntity.ok()
                     .headers(HttpHeaders.EMPTY)
                     .body(cohorts);
         } catch (IOException e){
@@ -228,7 +228,7 @@ public class QueryServerModel {
                 result.add(ele.toString());
             }
 
-            return ResponseEntity.badRequest()
+            return ResponseEntity.ok()
                     .headers(HttpHeaders.EMPTY)
                     .body(result);
 
@@ -265,7 +265,7 @@ public class QueryServerModel {
             InputVector userVector = coolModel.getCohortUsers(inputCohort);
             int[] results = coolModel.cohortEngine.performFunnelQuery(inputCube, userVector, query);
             System.out.println("Result for the query is  " + Arrays.toString(results));
-            return ResponseEntity.badRequest()
+            return ResponseEntity.ok()
                     .headers(HttpHeaders.EMPTY)
                     .body(Arrays.toString(results));
 
@@ -304,7 +304,7 @@ public class QueryServerModel {
             coolModel.cohortEngine.exportCohort(inputCube, userVector, writer);
 
             coolModel.close();
-            return ResponseEntity.badRequest()
+            return ResponseEntity.ok()
                     .headers(HttpHeaders.EMPTY)
                     .body(result);
 
@@ -337,7 +337,7 @@ public class QueryServerModel {
             List<BaseResult> results = coolModel.olapEngine.performOlapQuery(coolModel.getCube(inputSource), query);
             result = QueryResult.ok(results);
 
-            return ResponseEntity.badRequest()
+            return ResponseEntity.ok()
                     .headers(HttpHeaders.EMPTY)
                     .body(result.toString());
 
