@@ -41,10 +41,10 @@ public class CoolModel implements Closeable {
   private final Map<String, CubeRS> metaStore = Maps.newHashMap();
 
   // Container of loaded cohorts
-  private Map<String, CohortRS> cohortStore = Maps.newHashMap();
+  private final Map<String, CohortRS> cohortStore = Maps.newHashMap();
 
   // Store path of loaded cubes
-  private Map<String, File> storePath = Maps.newHashMap();
+  private final Map<String, File> storePath = Maps.newHashMap();
 
   // Directory containing a set of cube files considered a repository
   private final File localRepo;
@@ -75,7 +75,7 @@ public class CoolModel implements Closeable {
    */
   public synchronized void reload(String cube) throws IOException {
     // Skip the reload process if the cube is the current one
-    if (currentCube == cube) return;
+    if (Objects.equals(currentCube, cube)) return;
 
     // Remove the old version of the cube
     this.metaStore.remove(cube);
@@ -84,20 +84,15 @@ public class CoolModel implements Closeable {
 
     // Check the existence of cube under this repository
     File cubeRoot = new File(this.localRepo, cube);
-      if (!cubeRoot.exists()) {
-        throw new FileNotFoundException("[x] Cube " + cube + " was not found in the repository.");
-      }
+    if (!cubeRoot.exists()) {
+      throw new FileNotFoundException("[x] Cube " + cube + " was not found in the repository.");
+    }
 
-    File[] versions = cubeRoot.listFiles(new FileFilter() {
-      @Override
-      public boolean accept(File file) {
-        return file.isDirectory();
-      }
-    });
+    File[] versions = cubeRoot.listFiles(File::isDirectory);
     checkNotNull(versions);
-      if (versions.length == 0) {
-          return;
-      }
+    if (versions.length == 0) {
+        return;
+    }
     Arrays.sort(versions);
 
     // Only load the latest version
@@ -107,21 +102,17 @@ public class CoolModel implements Closeable {
     TableSchema schema = TableSchema.read(new FileInputStream(new File(currentVersion, "table.yaml")));
     CubeRS cubeRS = new CubeRS(schema);
 
-    File[] cubletFiles = currentVersion.listFiles(new FilenameFilter() {
-      @Override
-      public boolean accept(File file, String s) {
-        return s.endsWith(".dz");
-      }
-    });
+    File[] cubletFiles = currentVersion.listFiles((file, s) -> s.endsWith(".dz"));
     System.out.println("Cube " + cube + ", versions: " + Arrays.toString(versions));
     System.out.println("Cube " + cube + ", Use version: " + currentVersion.getName());
     storePath.put(cube, currentVersion);
 
     // Load all cubes under latest version
     checkNotNull(cubletFiles);
-      for (File cubletFile : cubletFiles) {
-          cubeRS.addCublet(cubletFile);
-      }
+    for (File cubletFile : cubletFiles) {
+        cubeRS.addCublet(cubletFile);
+    }
+
     this.metaStore.put(cube, cubeRS);
     System.out.println("Cube " + cube + ", metaStore: " + this.metaStore.keySet());
   }
