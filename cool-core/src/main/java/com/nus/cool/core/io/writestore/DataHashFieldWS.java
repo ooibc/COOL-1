@@ -40,7 +40,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Hash-like indexed field, used to store chunk data for four fieldTypes, including AppKey, UserKey,
+ * Hash-like indexed field, used to store chunk data for four fieldTypes,
+ * including AppKey, UserKey,
  * Action, Segment
  * <p>
  * Data Layout
