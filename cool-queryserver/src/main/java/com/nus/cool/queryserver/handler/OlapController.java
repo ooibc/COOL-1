@@ -38,9 +38,6 @@ import java.io.IOException;
 @RequestMapping("/olap")
 public class OlapController {
 
-    private final QueryServerModel qsModel =
-            new QueryServerModel("/Users/kevin/project_java/COOL/datasetSource");
-
     @PostMapping(value = "/iceberg",
             produces = MediaType.APPLICATION_JSON_VALUE,
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -51,7 +48,7 @@ public class OlapController {
         String queryContent = new String(queryFile.getBytes());
         ObjectMapper mapper = new ObjectMapper();
         IcebergQuery q = mapper.readValue(queryContent, IcebergQuery.class);
-        return qsModel.precessIcebergQuery(q);
+        return QueryServerModel.precessIcebergQuery(q);
     }
 
 }

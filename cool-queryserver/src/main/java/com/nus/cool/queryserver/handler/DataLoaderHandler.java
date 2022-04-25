@@ -33,9 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DataLoaderHandler {
 
-    private final QueryServerModel qsModel =
-            new QueryServerModel("/Users/kevin/project_java/COOL/datasetSource");
-
     @GetMapping(value = "/info")
     public String getIntroduction() {
         Util.getTimeClock();
@@ -61,17 +58,17 @@ public class DataLoaderHandler {
         Util.getTimeClock();
         System.out.println("[*] Server is performing the cohort query form ");
         System.out.println("[*] This query is for loading a new cube: " + req);
-        return qsModel.loadCube(req);
+        return QueryServerModel.loadCube(req);
     }
 
-    @PostMapping(value = "/reload",
-            produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
-            consumes = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> reload(@RequestBody ReloadRequest cubReq) {
-        Util.getTimeClock();
-        System.out.println("[*] Server is reloading the cube: " + cubReq.cubeName );
-        return qsModel.reloadCube(cubReq.cubeName);
-    }
+//    @PostMapping(value = "/reload",
+//            produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE,
+//            consumes = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<String> reload(@RequestBody ReloadRequest cubReq) {
+//        Util.getTimeClock();
+//        System.out.println("[*] Server is reloading the cube: " + cubReq.cubeName );
+//        return QueryServerModel.reloadCube(cubReq.cubeName);
+//    }
 
 
     @GetMapping(value = "/listcubes",
@@ -79,13 +76,9 @@ public class DataLoaderHandler {
     public ResponseEntity<String[]> listCubes() {
         Util.getTimeClock();
         System.out.println("[*] Server is listing all cubes.");
-        return qsModel.listCubes();
+        return QueryServerModel.listCubes();
     }
 
-}
-
-class ReloadRequest {
-    public String cubeName;
 }
 
 

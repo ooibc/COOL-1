@@ -19,6 +19,7 @@
 
 package com.nus.cool.queryserver;
 
+import com.nus.cool.queryserver.singleton.ModelPathCfg;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -33,6 +34,7 @@ public class Application{
     public enum Role { WORKER, BROKER }
 
     public static void main(String[] args) {
+        ModelPathCfg.dataSourcePath = "/Users/kevin/project_java/COOL/datasetSource" ;
         SpringApplication.run(Application.class, args);
     }
 

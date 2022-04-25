@@ -18,15 +18,13 @@ import java.util.List;
 @RequestMapping("/cohort")
 public class CohortController {
 
-    private final QueryServerModel qsModel =
-            new QueryServerModel("/Users/kevin/project_java/COOL/datasetSource");
 
     @GetMapping(value = "/list",
             produces = org.springframework.http.MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String[]> listCohorts(@QueryParam("cube") String cube) {
         Util.getTimeClock();
-        System.out.println("[*] Server is listing all cohorts.");
-        return qsModel.listCohorts(cube);
+        System.out.println("[*] Server is listing all cohorts."+cube);
+        return QueryServerModel.listCohorts(cube);
     }
 
     @PostMapping(value = "/selection",
@@ -39,7 +37,7 @@ public class CohortController {
         String queryContent = new String(queryFile.getBytes());
         ObjectMapper mapper = new ObjectMapper();
         ExtendedCohortQuery q = mapper.readValue(queryContent, ExtendedCohortQuery.class);
-        return qsModel.cohortSelection(q);
+        return QueryServerModel.cohortSelection(q);
     }
 
     @PostMapping(value = "/cohort-analysis",
@@ -52,7 +50,7 @@ public class CohortController {
         String queryContent = new String(queryFile.getBytes());
         ObjectMapper mapper = new ObjectMapper();
         ExtendedCohortQuery q = mapper.readValue(queryContent, ExtendedCohortQuery.class);
-        return qsModel.cohortAnalysis(q);
+        return QueryServerModel.cohortAnalysis(q);
     }
 
     @PostMapping(value = "/funnel-analysis",
@@ -65,7 +63,7 @@ public class CohortController {
         String queryContent = new String(queryFile.getBytes());
         ObjectMapper mapper = new ObjectMapper();
         FunnelQuery q = mapper.readValue(queryContent, FunnelQuery.class);
-        return qsModel.funnelAnalysis(q);
+        return QueryServerModel.funnelAnalysis(q);
     }
 
 }
