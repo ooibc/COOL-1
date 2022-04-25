@@ -10,17 +10,25 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <groupId>com.example</groupId>
-    <artifactId>spring-boot-complete</artifactId>
+    <groupId>com.nus</groupId>
+    <artifactId>cool-queryserver</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>spring-boot-complete</name>
-    <description>Demo project for Spring Boot</description>
+    <name>cool-queryserver</name>
+    <description>cool queryserver</description>
 
     <properties>
         <java.version>1.8</java.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpasyncclient</artifactId>
+            <version>4.1.3</version>
+        </dependency>
+        <!-- Thanks for using https://jar-download.com -->
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -47,12 +55,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-core</artifactId>
-            <version>1.9</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>com.nus</groupId>
             <artifactId>parquet-extensions</artifactId>

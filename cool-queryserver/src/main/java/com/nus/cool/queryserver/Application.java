@@ -34,7 +34,12 @@ public class Application{
     public enum Role { WORKER, BROKER }
 
     public static void main(String[] args) {
-        ModelPathCfg.dataSourcePath = "/Users/kevin/project_java/COOL/datasetSource" ;
+//        ModelPathCfg.dataSourcePath = "/Users/kevin/project_java/COOL/datasetSource" ;
+//        SpringApplication.run(Application.class, args);
+
+        ModelPathCfg.dataSourcePath = args[0];
+        System.out.println("dataSourcePath="+ModelPathCfg.dataSourcePath);
+        String[] sArg = new String[1];
         SpringApplication.run(Application.class, args);
     }
 
