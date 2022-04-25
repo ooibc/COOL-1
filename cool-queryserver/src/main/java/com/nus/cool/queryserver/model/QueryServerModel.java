@@ -83,11 +83,9 @@ public class QueryServerModel {
             return ResponseEntity.ok()
                     .headers(HttpHeaders.EMPTY)
                     .body(resStr);
-        } catch (IOException e){
+        } catch (Exception e){
             System.out.println(e);
-            return ResponseEntity.badRequest()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(e.getMessage());
+            return ResponseEntity.badRequest().headers(HttpHeaders.EMPTY).body(e.getMessage());
         }
     }
 
@@ -109,7 +107,7 @@ public class QueryServerModel {
 //            return ResponseEntity.ok()
 //                    .headers(HttpHeaders.EMPTY)
 //                    .body(resStr);
-//        } catch (IOException e){
+//        } catch (Exception e){
 //            System.out.println(e);
 //            return ResponseEntity.badRequest()
 //                    .headers(HttpHeaders.EMPTY)
@@ -122,9 +120,7 @@ public class QueryServerModel {
      * @return cubes
      */
     public static ResponseEntity<String[]> listCubes() {
-        return ResponseEntity.ok()
-                .headers(HttpHeaders.EMPTY)
-                .body(CoolModel.listCubes(ModelPathCfg.dataSourcePath));
+        return ResponseEntity.ok().headers(HttpHeaders.EMPTY).body(CoolModel.listCubes(ModelPathCfg.dataSourcePath));
     }
 
     /**
@@ -137,7 +133,6 @@ public class QueryServerModel {
         try {
 
             CoolModel coolModel = new CoolModel(ModelPathCfg.dataSourcePath);
-
 
             String cube = query.getDataSource();
 
@@ -164,15 +159,11 @@ public class QueryServerModel {
             for(Integer ele: users){
                 result.add(ele.toString());
             }
-            return ResponseEntity.ok()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(result);
-        } catch (IOException e){
+            return ResponseEntity.ok().headers(HttpHeaders.EMPTY).body(result);
+        } catch (Exception e){
             System.out.println(e);
             result.add(e.getMessage());
-            return ResponseEntity.badRequest()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(result);
+            return ResponseEntity.badRequest().headers(HttpHeaders.EMPTY).body(result);
         }
     }
 
@@ -185,16 +176,12 @@ public class QueryServerModel {
         try {
             CoolModel coolModel = new CoolModel(ModelPathCfg.dataSourcePath);
             coolModel.reload(cube);
-
             cohorts = coolModel.listCohorts(cube);
-            return ResponseEntity.ok()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(cohorts);
-        } catch (IOException e){
+
+            return ResponseEntity.ok().headers(HttpHeaders.EMPTY).body(cohorts);
+        } catch (Exception e){
             System.out.println(e);
-            return ResponseEntity.badRequest()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(cohorts);
+            return ResponseEntity.badRequest().headers(HttpHeaders.EMPTY).body(cohorts);
         }
     }
 
@@ -228,16 +215,12 @@ public class QueryServerModel {
                 result.add(ele.toString());
             }
 
-            return ResponseEntity.ok()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(result);
+            return ResponseEntity.ok().headers(HttpHeaders.EMPTY).body(result);
 
-        } catch (IOException e){
+        } catch (Exception e){
             System.out.println(e);
             result.add(e.getMessage());
-            return ResponseEntity.badRequest()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(result);
+            return ResponseEntity.badRequest().headers(HttpHeaders.EMPTY).body(result);
         }
     }
 
@@ -265,15 +248,11 @@ public class QueryServerModel {
             InputVector userVector = coolModel.getCohortUsers(inputCohort);
             int[] results = coolModel.cohortEngine.performFunnelQuery(inputCube, userVector, query);
             System.out.println("Result for the query is  " + Arrays.toString(results));
-            return ResponseEntity.ok()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(Arrays.toString(results));
+            return ResponseEntity.ok().headers(HttpHeaders.EMPTY).body(Arrays.toString(results));
 
-        } catch (IOException e){
+        } catch (Exception e){
             System.out.println(e);
-            return ResponseEntity.badRequest()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(e.getMessage());
+            return ResponseEntity.badRequest().headers(HttpHeaders.EMPTY).body(e.getMessage());
         }
     }
 
@@ -304,18 +283,13 @@ public class QueryServerModel {
             coolModel.cohortEngine.exportCohort(inputCube, userVector, writer);
 
             coolModel.close();
-            return ResponseEntity.ok()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(result);
+            return ResponseEntity.ok().headers(HttpHeaders.EMPTY).body(result);
 
-        }catch (IOException e){
+        }catch (Exception e){
             System.out.println(e);
             result.add(e.getMessage());
-            return ResponseEntity.badRequest()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(result);
+            return ResponseEntity.badRequest().headers(HttpHeaders.EMPTY).body(result);
         }
-
     }
 
 
@@ -337,15 +311,11 @@ public class QueryServerModel {
             List<BaseResult> results = coolModel.olapEngine.performOlapQuery(coolModel.getCube(inputSource), query);
             result = QueryResult.ok(results);
 
-            return ResponseEntity.ok()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(result.toString());
+            return ResponseEntity.ok().headers(HttpHeaders.EMPTY).body(result.toString());
 
         } catch (Exception e){
             System.out.println(e);
-            return ResponseEntity.badRequest()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(e.getMessage());
+            return ResponseEntity.badRequest().headers(HttpHeaders.EMPTY).body(e.getMessage());
         }
     }
 }
