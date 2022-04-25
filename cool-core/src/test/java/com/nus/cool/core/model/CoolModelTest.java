@@ -57,8 +57,7 @@ public class CoolModelTest {
         System.out.println("======================== Cube List Test ========================");
         // System.out.println(System.getProperty("user.dir"));
         String datasetPath = "../datasetSource";
-        CoolModel model = new CoolModel(datasetPath);
-        String[] cubes2 = model.listCubes();
+        String[] cubes2 = CoolModel.listCubes(datasetPath);
         System.out.println("Applications: " + Arrays.toString(cubes2));
     }
 

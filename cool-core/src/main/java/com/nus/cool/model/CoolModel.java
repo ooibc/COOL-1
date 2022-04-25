@@ -145,8 +145,9 @@ public class CoolModel implements Closeable {
       return out;
   }
 
-  public synchronized String[] listCubes() {
-    return this.localRepo.list();
+  public static String[] listCubes(String Path) {
+    File localRepoPara = new File(Path);
+    return localRepoPara.list();
   }
 
   public synchronized boolean isCubeLoaded(String Cube) {
