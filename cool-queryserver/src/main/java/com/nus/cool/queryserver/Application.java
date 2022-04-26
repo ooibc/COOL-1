@@ -36,7 +36,7 @@ import java.util.Collections;
 @SpringBootApplication
 public class Application {
 
-    public enum Role { WORKER, BROKER }
+    public enum Role { STANDALONE, WORKER, BROKER }
 
     /**
      * Run server
@@ -50,30 +50,36 @@ public class Application {
      */
     public static void main(String[] args) throws InterruptedException, KeeperException, IOException, URISyntaxException {
 
+//        String rawDataSource = "COOL/datasetSource/";
+//        String rawPort = "9009";
+//        String rawRole = "STANDALONE";
+
         String rawDataSource = args[0];
         String rawPort = args[1];
         String rawRole = args[2];
 
-//        String rawDataSource = "/Users/kevin/project_java/COOL/datasetSource/";
-//        String rawPort = "9011";
-//        String rawRole = "WORKER";
+        Role role = Role.valueOf(rawRole);
+        ModelPathCfg.dataSourcePath = rawDataSource;
 
         System.out.printf("Query server version0.0.1, input DataSource=%s, port=%s, role=%s\n", rawDataSource, rawPort, rawRole);
-//         1 create singletons
-        HDFSConnection fs = HDFSConnection.getInstance();
-        ZKConnection zk = ZKConnection.getInstance();
 
-//         2. get local address.
-        InetAddress addr = InetAddress.getLocalHost();
-        String host = addr.getHostAddress();
-        Role role = Role.valueOf(rawRole);
+        ZKConnection zk;
+
+        // get local address.
+        String host = InetAddress.getLocalHost().getHostAddress();
 
         switch (role) {
+            case STANDALONE:
+                break;
             case BROKER:
+                // 1. connect to HDFS and zookeeper
+                HDFSConnection.getInstance();
+                zk = ZKConnection.getInstance();
+                // 2. add address to broker
                 zk.createBroker(host + ":"+rawPort);
-
-//                WorkerWatcher workerWatcher = new WorkerWatcher(zk);
-                // 3. init singleton
+                // 3. run zookeeper watcher.
+                WorkerWatcher workerWatcher = new WorkerWatcher(zk);
+                // 4. init singleton
                 TaskQueue.getInstance();
                 WorkerIndex.getInstance();
                 QueryIndex.getInstance();
@@ -82,19 +88,22 @@ public class Application {
                 consumer.start();
                 break;
             case WORKER:
+                // 1. connect to HDFS and zookeeper
+                HDFSConnection.getInstance();
+                zk = ZKConnection.getInstance();
+                // 2. register worker to zookeeper
                 zk.addWorker(host + ":"+rawPort);
                 break;
+
             default:
                 throw new IllegalArgumentException();
         }
 
-        ModelPathCfg.dataSourcePath = rawDataSource;
-        System.out.println("Start server at port = "+rawPort);
+        // Start service
         SpringApplication app = new SpringApplication(Application.class);
         app.setDefaultProperties(Collections.singletonMap("server.port", rawPort));
         app.run();
     }
-
 
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {

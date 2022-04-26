@@ -14,7 +14,6 @@ import com.nus.cool.queryserver.singleton.ZKConnection;
 import com.nus.cool.result.ExtendedResultTuple;
 import org.apache.zookeeper.KeeperException;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
