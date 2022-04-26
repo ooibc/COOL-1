@@ -59,7 +59,6 @@ public class CoolLoader {
             }
         }
         File schemaFile = new File(schemaFileName);
-        File dimensionFile = new File(dimFileName);
         File dataFile = new File(dataFileName);
         TableSchema schema = TableSchema.read( new FileInputStream(schemaFile));
 

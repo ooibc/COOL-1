@@ -44,6 +44,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Execute different Query
+ */
 public class CoolCohortEngine {
 
     public List<String> listCohortUsers(CubeRS cube, List<Integer> inCohort){
@@ -60,6 +63,14 @@ public class CoolCohortEngine {
         return outCohort;
     }
 
+    /**
+     * Cohort Users
+     * @param cube cube
+     * @param users users
+     * @param query query
+     * @return result
+     * @throws IOException
+     */
     public List<Integer> selectCohortUsers(CubeRS cube,
                                                   InputVector users,
                                                   ExtendedCohortQuery query) throws IOException {
@@ -90,6 +101,13 @@ public class CoolCohortEngine {
     }
 
 
+    /**
+     * createCohort
+     * @param users users
+     * @param query query instance
+     * @param cohortRoot file
+     * @return result
+     */
     public void createCohort(ExtendedCohortQuery query, List<Integer> users, File cohortRoot) throws IOException {
         String cohortName = query.getOutputCohort();
         File cohort = new File(cohortRoot, cohortName);
@@ -122,10 +140,10 @@ public class CoolCohortEngine {
     }
 
     public List<ExtendedResultTuple> processCohortResult(ExtendedCohortQuery query,
-                                                                TableSchema tableSchema,
-                                                                MetaChunkRS metaChunk,
-                                                                ExtendedCohortSelection sigma,
-                                                                Map<ExtendedCohort, Map<Integer, List<Double>>> resultMap){
+                                                         TableSchema tableSchema,
+                                                         MetaChunkRS metaChunk,
+                                                         ExtendedCohortSelection sigma,
+                                                         Map<ExtendedCohort, Map<Integer, List<Double>>> resultMap){
         List<ExtendedResultTuple> resultSet = new ArrayList<>();
         for (Map.Entry<ExtendedCohort, Map<Integer, List<Double>>> entry:resultMap.entrySet()) {
             ExtendedCohort key = entry.getKey();
@@ -198,6 +216,13 @@ public class CoolCohortEngine {
         return resultSet;
     }
 
+    /**
+     * performCohortQuery
+     * @param cube cube name
+     * @param users users
+     * @param query query instance
+     * @return result
+     */
     public List<ExtendedResultTuple> performCohortQuery(CubeRS cube, InputVector users, ExtendedCohortQuery query) {
         List<CubletRS> cublets = cube.getCublets();
         TableSchema tableSchema = cube.getTableSchema();
@@ -227,6 +252,13 @@ public class CoolCohortEngine {
         return resultSet;
     }
 
+    /**
+     * performFunnelQuery
+     * @param cube cube name
+     * @param users users
+     * @param query query instance
+     * @return result
+     */
     public int[] performFunnelQuery(CubeRS cube, InputVector users, FunnelQuery query){
         List<CubletRS> cublets = cube.getCublets();
         TableSchema tableSchema = cube.getTableSchema();

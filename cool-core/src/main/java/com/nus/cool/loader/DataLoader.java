@@ -73,11 +73,12 @@ public class DataLoader {
     public void load() throws IOException {
         // write dataChunk first
         writer.Initialize();
-      while (reader.hasNext()) {
-          writer.Add(parser.parse(reader.next()));
-      }
-      writer.Finish();
+        while (reader.hasNext()) {
+            writer.Add(parser.parse(reader.next()));
+        }
+        writer.Finish();
     }
+
     @AllArgsConstructor
     public static class Builder {
         /**
