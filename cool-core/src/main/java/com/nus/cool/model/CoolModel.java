@@ -28,6 +28,7 @@ import com.nus.cool.core.io.readstore.CohortRS;
 import com.nus.cool.core.schema.TableSchema;
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.*;
 
@@ -68,14 +69,14 @@ public class CoolModel implements Closeable {
   }
 
   /**
-   * Load a cube (a set of cube files) from the repository into memory
+   * Load a cube (a set of cube files) from the repository folder into memory
    *
    * @param cube the cube name
    * @throws IOException
    */
   public synchronized void reload(String cube) throws IOException {
     // Skip the reload process if the cube is the current one
-    if (Objects.equals(currentCube, cube)) return;
+    if (currentCube.equals(cube)) return;
 
     // Remove the old version of the cube
     this.metaStore.remove(cube);
@@ -113,6 +114,28 @@ public class CoolModel implements Closeable {
         cubeRS.addCublet(cubletFile);
     }
 
+    this.metaStore.put(cube, cubeRS);
+    System.out.println("Cube " + cube + ", metaStore: " + this.metaStore.keySet());
+  }
+
+  /**
+   * Load from Bytebuffer.
+   * @param cube cube name, data source name
+   * @param buffer input buffer
+   * @param tableSchema input schema
+   * @throws IOException IOException
+   */
+  public synchronized void reload(String cube, ByteBuffer buffer, TableSchema tableSchema) throws IOException {
+
+    // Remove the old version of the cube
+    this.metaStore.remove(cube);
+    this.cohortStore.clear();
+    this.currentCube = cube;
+
+    // 1. Read schema information
+    CubeRS cubeRS = new CubeRS(tableSchema);
+    // 2. Load cube from buffer
+    cubeRS.addCublet(buffer);
     this.metaStore.put(cube, cubeRS);
     System.out.println("Cube " + cube + ", metaStore: " + this.metaStore.keySet());
   }
