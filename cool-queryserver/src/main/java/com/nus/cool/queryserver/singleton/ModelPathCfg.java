@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 public class ModelPathCfg {
 
-
-
     public static String dataSourcePath;
 
 }

@@ -19,28 +19,80 @@
 
 package com.nus.cool.queryserver;
 
-import com.nus.cool.queryserver.singleton.ModelPathCfg;
+import com.nus.cool.queryserver.singleton.*;
+import org.apache.zookeeper.KeeperException;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.Collections;
 
 @SpringBootApplication
-public class Application{
+public class Application {
 
     public enum Role { WORKER, BROKER }
 
-    public static void main(String[] args) {
-//        ModelPathCfg.dataSourcePath = "/Users/kevin/project_java/COOL/datasetSource" ;
-//        SpringApplication.run(Application.class, args);
+    /**
+     * Run server
+     * @param args args[0]: data source path
+     *             args[1]: port
+     *             args[2]: role, WORKER or BROKER,
+     * @throws InterruptedException  ZKConnection
+     * @throws KeeperException ZKConnection
+     * @throws IOException HDFSConnection
+     * @throws URISyntaxException HDFSConnection
+     */
+    public static void main(String[] args) throws InterruptedException, KeeperException, IOException, URISyntaxException {
 
-        ModelPathCfg.dataSourcePath = args[0];
-        System.out.println("dataSourcePath="+ModelPathCfg.dataSourcePath);
-        String[] sArg = new String[1];
-        SpringApplication.run(Application.class, args);
+        String rawDataSource = args[0];
+        String rawPort = args[1];
+        String rawRole = args[2];
+
+//        String rawDataSource = "/Users/kevin/project_java/COOL/datasetSource/";
+//        String rawPort = "9011";
+//        String rawRole = "WORKER";
+
+        System.out.printf("Query server version0.0.1, input DataSource=%s, port=%s, role=%s\n", rawDataSource, rawPort, rawRole);
+//         1 create singletons
+        HDFSConnection fs = HDFSConnection.getInstance();
+        ZKConnection zk = ZKConnection.getInstance();
+
+//         2. get local address.
+        InetAddress addr = InetAddress.getLocalHost();
+        String host = addr.getHostAddress();
+        Role role = Role.valueOf(rawRole);
+
+        switch (role) {
+            case BROKER:
+                zk.createBroker(host + ":"+rawPort);
+
+//                WorkerWatcher workerWatcher = new WorkerWatcher(zk);
+                // 3. init singleton
+                TaskQueue.getInstance();
+                WorkerIndex.getInstance();
+                QueryIndex.getInstance();
+
+                Thread consumer = new BrokerConsumerThread();
+                consumer.start();
+                break;
+            case WORKER:
+                zk.addWorker(host + ":"+rawPort);
+                break;
+            default:
+                throw new IllegalArgumentException();
+        }
+
+        ModelPathCfg.dataSourcePath = rawDataSource;
+        System.out.println("Start server at port = "+rawPort);
+        SpringApplication app = new SpringApplication(Application.class);
+        app.setDefaultProperties(Collections.singletonMap("server.port", rawPort));
+        app.run();
     }
 
 
@@ -55,7 +107,6 @@ public class Application{
             for (String beanName : beanNames) {
                 System.out.println(beanName);
             }
-
         };
     }
 

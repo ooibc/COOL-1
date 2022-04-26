@@ -80,9 +80,7 @@ public class QueryServerModel {
             CoolLoader coolLoader = new CoolLoader(config);
             coolLoader.load(q.getCubeName(),q.getSchemaPath(),q.getDimPath(),q.getDataPath(),q.getOutputPath());
             String resStr = "Cube " + q.getCubeName() + " has already been loaded.";
-            return ResponseEntity.ok()
-                    .headers(HttpHeaders.EMPTY)
-                    .body(resStr);
+            return ResponseEntity.ok().headers(HttpHeaders.EMPTY).body(resStr);
         } catch (Exception e){
             System.out.println(e);
             return ResponseEntity.badRequest().headers(HttpHeaders.EMPTY).body(e.getMessage());
